@@ -5,8 +5,8 @@ Gem::Specification.new do |s|
   s.name        = "odnoklassniki_api"
   s.version     = OdnoklassnikiAPI::VERSION
   s.platform    = Gem::Platform::RUBY
-  s.authors     = [""]
-  s.email       = [""]
+  s.authors     = ["Natalia Sergeeva"]
+  s.email       = ["natalia.m.sergeeva@gmail.com"]
   s.homepage    = "https://github.com/miliru/odnoklassniki_api"
   s.summary     = %q{}
   s.description = %q{}

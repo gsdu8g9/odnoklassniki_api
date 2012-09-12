@@ -40,12 +40,10 @@ module OdnoklassnikiAPI
 
       rescue MultiJson::DecodeError => e
         response_error = OdnoklassnikiAPI::Error::ParsingError
-      rescue Exception => e
-        if e.kind_of? Faraday::Error::TimeoutError
-          response_error = OdnoklassnikiAPI::Error::TimeoutError
-        elsif e.kind_of? Faraday::Error::ParsingError
-          response_error = OdnoklassnikiAPI::Error::ParsingError
-        end
+      rescue Faraday::Error::TimeoutError => e
+        response_error = Faraday::Error::TimeoutError
+      rescue Faraday::Error::ParsingError => e
+        response_error = OdnoklassnikiAPI::Error::ParsingError
       end
 
       if !response_error.nil?

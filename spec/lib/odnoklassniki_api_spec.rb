@@ -3,11 +3,11 @@ require 'spec_helper'
 
 describe OdnoklassnikiAPI do
 
-  let(:application_key) {'AAAIMMHGABABABABA'}
-  let(:secret_key) {'9999739F2796E9505B8E1BA7'}
-  let(:access_token) {'csipa.21-01avr1u8i06g3p4i22222e3k1fbd'}
-  let(:url) {"http://api.odnoklassniki.ru/fb.do?access_token=csipa.21-01avr1u8i06g3p4i22222e3k1fbd&method=friends.get&application_key=AAAIMMHGABABABABA&sig=215cd3fff5026220bb8b3db8617e714f"}
-  let(:error_url) {"http://api.odnoklassniki.ru/fb.do?access_token=csipa.21-01avr1u8i06g3p4i22222e3k1fbd&method=frien.get&application_key=AAAIMMHGABABABABA&sig=97270099c3a6ee65374e6599add7be21"}
+  let(:application_key) {'application_key'}
+  let(:secret_key) {'secret_key'}
+  let(:access_token) {'csipa.21-xxxxxxxxxxxxxxxxxxxxxxxxxxxx'}
+  let(:url) {"http://api.odnoklassniki.ru/fb.do?access_token=csipa.21-xxxxxxxxxxxxxxxxxxxxxxxxxxxx&method=friends.get&application_key=application_key&sig=92cd12074a5d377e1e71fa2ff12f5f43"}
+  let(:error_url) {"http://api.odnoklassniki.ru/fb.do?access_token=csipa.21-xxxxxxxxxxxxxxxxxxxxxxxxxxxx&method=frien.get&application_key=application_key&sig=5627bfd402b647ca4843468eb69691eb"}
 
   before do
     @client = OdnoklassnikiAPI.new({:application_key => application_key, :secret_key =>secret_key})
