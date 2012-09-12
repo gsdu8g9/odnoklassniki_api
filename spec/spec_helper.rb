@@ -2,6 +2,7 @@ require 'rspec'
 require 'webmock/rspec'
 require 'odnoklassniki_api'
 require 'net/http'
+require 'pry'
 
 RSpec.configure do |config|
   config.color_enabled = true

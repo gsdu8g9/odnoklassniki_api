@@ -38,6 +38,8 @@ module OdnoklassnikiAPI
 
         response_error = (response.status != 200) ? OdnoklassnikiAPI::Error::WrongStatusError : nil
 
+      rescue MultiJson::DecodeError => e
+        response_error = OdnoklassnikiAPI::Error::ParsingError
       rescue Exception => e
         if e.kind_of? Faraday::Error::TimeoutError
           response_error = OdnoklassnikiAPI::Error::TimeoutError
