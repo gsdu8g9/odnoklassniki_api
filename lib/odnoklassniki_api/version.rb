@@ -1,0 +1,3 @@
+module OdnoklassnikiAPI
+  VERSION = "0.0.1"
+end
