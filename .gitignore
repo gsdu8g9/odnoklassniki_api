@@ -18,4 +18,3 @@ _yardoc
 doc/
 log/*.log
 .idea
-Gemfile.lock

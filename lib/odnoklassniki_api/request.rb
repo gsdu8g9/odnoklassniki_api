@@ -34,13 +34,7 @@ module OdnoklassnikiAPI
       options = options.merge sig: signature
 
       begin
-        response =
-            connection.send(method) do |request|
-              case method.to_sym
-                when :get
-                  request.url '', options
-              end
-            end
+        response = connection.get{|request| request.params = options}
 
         response_error = (response.status != 200) ? OdnoklassnikiAPI::Error::WrongStatusError : nil
 
