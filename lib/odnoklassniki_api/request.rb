@@ -3,6 +3,7 @@ require 'faraday_middleware'
 require 'faraday'
 require 'odnoklassniki_api/errors'
 require 'digest/md5'
+require 'multi_json'
 
 module OdnoklassnikiAPI
   module Request
@@ -30,6 +31,7 @@ module OdnoklassnikiAPI
 
       options = options.merge method: api_method
       options = options.merge application_key: application_key
+      options = options.merge access_token: access_token
       signature = calculate_signature options
       options = options.merge sig: signature
 

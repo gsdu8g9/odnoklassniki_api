@@ -3,7 +3,7 @@ require 'odnoklassniki_api/version'
 
 module OdnoklassnikiAPI
   module Configuration
-    VALID_OPTIONS_KEYS = [:endpoint, :user_agent, :adapter, :timeout, :application_key, :logger, :logged_user_id, :api_server, :secret_key, :authorized, :apiconnection]
+    VALID_OPTIONS_KEYS = [:endpoint, :user_agent, :adapter, :timeout, :application_key, :logger, :logged_user_id, :api_server, :secret_key, :authorized, :apiconnection, :access_token]
 
     DEFAULT_ENDPOINT           = 'http://api.odnoklassniki.ru/fb.do'
     DEFAULT_USER_AGENT         = "odnoklassniki_api gem #{OdnoklassnikiAPI::VERSION}".freeze
@@ -16,6 +16,7 @@ module OdnoklassnikiAPI
     DEFAULT_SECRET_KEY         = nil
     DEFAULT_AUTHORIZED         = 1
     DEFAULT_APICONNECTION      = nil
+    DEFAULT_ACCESS_TOKEN       = nil
 
     attr_accessor *VALID_OPTIONS_KEYS
 
@@ -45,6 +46,7 @@ module OdnoklassnikiAPI
       self.secret_key         = DEFAULT_SECRET_KEY
       self.authorized         = DEFAULT_AUTHORIZED
       self.apiconnection      = DEFAULT_APICONNECTION
+      self.access_token       = DEFAULT_ACCESS_TOKEN
     end
 
   end
