@@ -11,6 +11,7 @@ module OdnoklassnikiAPI
     attr_accessor *Configuration::VALID_OPTIONS_KEYS
 
     def initialize options = {}
+      options = options.inject({}){|new,(key,value)| new[key.to_sym] = value; new}
       options = OdnoklassnikiAPI.options.merge(options)
       Configuration::VALID_OPTIONS_KEYS.each do |key|
         send("#{key}=", options[key])
