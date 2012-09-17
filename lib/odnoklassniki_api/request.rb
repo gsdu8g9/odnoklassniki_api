@@ -20,7 +20,7 @@ module OdnoklassnikiAPI
       options = options.sort
       options.each do |key, value|
         if (key != :access_token)
-          signature += key.to_s + "=" + value
+          signature += key.to_s + "=" + value.to_s
         end
       end
       signature = (signature + secret_hash)
