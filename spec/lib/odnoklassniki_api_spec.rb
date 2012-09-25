@@ -47,7 +47,7 @@ describe OdnoklassnikiAPI do
       stub_get_request(url, app_error_response, 'application/json')
       result = @client.get 'friends.get'
 
-      result.should == JSON.parse(app_error_response)
+      result.should == OdnoklassnikiAPI::Error::ParamApiKeyError
     end
 
     it "should return parsing error if response is not json" do

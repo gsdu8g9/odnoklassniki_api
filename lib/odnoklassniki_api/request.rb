@@ -5,7 +5,6 @@ require 'odnoklassniki_api/errors'
 require 'odnoklassniki_api/connection'
 require 'digest/md5'
 require 'multi_json'
-require 'pry'
 
 module OdnoklassnikiAPI
   module Request
@@ -69,6 +68,10 @@ module OdnoklassnikiAPI
         response = response_error
       else
         response = response.body
+
+        if response.respond_to? :error_code
+          response = Error::ApiError.get_by_code response.error_code.to_s
+        end
       end
 
       response
@@ -78,7 +81,7 @@ module OdnoklassnikiAPI
       result = nil
       if response.respond_to?('hasMore') && (response.hasMore)
         options = response.options
-        options.tap { |h| h.delete(:sig) }
+        options.delete(:sig)
         options = options.merge pagingAnchor: response.pagingAnchor
         signature =  calculate_signature options
         options = options.merge sig: signature
