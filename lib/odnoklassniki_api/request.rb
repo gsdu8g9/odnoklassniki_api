@@ -43,11 +43,13 @@ module OdnoklassnikiAPI
 
       response = get_data options
 
-      response.instance_eval <<-RESP
+      if !(response.is_a? TrueClass or response.is_a? FalseClass)
+        response.instance_eval <<-RESP
         def options; #{options} end
-      RESP
+        RESP
+      end
 
-    response
+      response
     end
 
     def get_data options
@@ -83,7 +85,7 @@ module OdnoklassnikiAPI
         options = response.options
         options.delete(:sig)
         options = options.merge pagingAnchor: response.pagingAnchor
-        signature =  calculate_signature options
+        signature = calculate_signature options
         options = options.merge sig: signature
 
         result = get_data options
