@@ -54,16 +54,8 @@ describe OdnoklassnikiAPI do
 
     it "should return parsing error if response is not json" do
       stub_get_request(error_url, no_method_response, 'text/html')
-      result = @client.get 'frien.get'
 
-      result.should == OdnoklassnikiAPI::Error::ParsingError
-    end
-
-    it "should return nil when calling next_page on not json response" do
-      stub_get_request(error_url, no_method_response, 'text/html')
-      result = @client.get 'frien.get'
-
-      @client.get_next_page(result).should == nil
+      expect {@client.get 'frien.get'}.to raise_error(OdnoklassnikiAPI::Error::ParsingError)
     end
 
     it "should return nil when calling next_page on error response" do

@@ -67,7 +67,7 @@ module OdnoklassnikiAPI
       end
 
       if !response_error.nil?
-        response = response_error
+        raise response_error
       else
         response = response.body
 
