@@ -72,7 +72,7 @@ module OdnoklassnikiAPI
         response = response.body
 
         if response.respond_to? :error_code
-          response = Error::ApiError.get_by_code response.error_code.to_s
+          raise Error::ApiError.get_by_code response.error_code.to_s
         end
       end
 
