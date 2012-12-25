@@ -54,6 +54,21 @@ describe OdnoklassnikiAPI do
       expect {@client.get 'frien.get'}.to raise_error(OdnoklassnikiAPI::Error::ParsingError)
     end
 
+    it "should raise timeout error"  do
+      stub_request(:get, url).to_timeout
+      expect {@client.get 'friends.get'}.to raise_error(OdnoklassnikiAPI::Error::TimeoutError)
+    end
+
+    it "should raise wrong status error" do
+      stub_request(:get, url).to_return(:status => 500)
+      expect {@client.get 'friends.get'}.to raise_error(OdnoklassnikiAPI::Error::WrongStatusError)
+    end
+
+    it "should raise api error" do
+      stub_get_request(url, {"error_code"=>102}, 'application/json')  # 102 = Session Expired
+      expect {@client.get 'friends.get'}.to raise_error(OdnoklassnikiAPI::Error::ParamSessionExpiredError)
+    end
+
     it "should return nil when calling next_page on response with no hasMore" do
       stub_get_request(url, normal_response, 'application/json')
       result = @client.get 'friends.get'
