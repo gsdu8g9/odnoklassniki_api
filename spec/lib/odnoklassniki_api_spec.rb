@@ -32,7 +32,7 @@ describe OdnoklassnikiAPI do
     end
 
     let(:normal_response) { '["CAAAAAAAAAAAAAAA","GGAAAAAAAAAAAAAA"]' }
-    let(:boolean_response) { "true" }
+    let(:boolean_response) { true }
     let(:app_error_response) { '{"error_code":101,"error_msg":"PARAM_API_KEY : Application not exist"}' }
     let(:no_method_response) { '3:METHOD : Method frien.get not found' }
     let(:has_more_response) {'{"photos": [ {  "fid":"1675836441",      "caption":"XXXXXXXXXXx...",      "location":null,      "standard_url":"http://devserv.odnoklassniki.ru:8000/getImage?photoId=1675836441&photoType=0",      "preview_url":"http://odnoklassniki.ru?photoId=1675836441&photoType=2",      "mark_count":29,      "mark_bonus_count":4,      "mark_avg":"5+"     }, { "fid":"1946947353",      "caption":"Yyyyyyyyyyyyy",      "location":null,      "standard_url":"http://devserv.odnoklassniki.ru:8000/getImage?photoId=1946947353&photoType=0",      "preview_url":"http://odnoklassniki.ru?photoId=1946947353&photoType=2",      "mark_count":1,      "mark_bonus_count":0,      "mark_avg":"5.00"     }], "hasMore":true, "pagingAnchor":"LTMyMTY3NzExMzotNzk5MDk5NDU=", "totalCount" : 5}'}
@@ -41,35 +41,23 @@ describe OdnoklassnikiAPI do
     it "should return users friends ids from get request" do
       stub_get_request(url, normal_response, 'application/json')
       result = @client.get 'friends.get'
-
-      result.should == JSON.parse(normal_response)
+      result.response.should == JSON.parse(normal_response)
     end
 
     it "should return json if friends get request is invalid" do
       stub_get_request(url, app_error_response, 'application/json')
-      result = @client.get 'friends.get'
-
-      result.should == OdnoklassnikiAPI::Error::ParamApiKeyError
+      expect {@client.get 'friends.get'}.to raise_error(OdnoklassnikiAPI::Error::ParamApiKeyError)
     end
 
     it "should return parsing error if response is not json" do
       stub_get_request(error_url, no_method_response, 'text/html')
-
       expect {@client.get 'frien.get'}.to raise_error(OdnoklassnikiAPI::Error::ParsingError)
-    end
-
-    it "should return nil when calling next_page on error response" do
-      stub_get_request(url, app_error_response, 'application/json')
-      result = @client.get 'friends.get'
-
-      @client.get_next_page(result).should == nil
     end
 
     it "should return nil when calling next_page on response with no hasMore" do
       stub_get_request(url, normal_response, 'application/json')
       result = @client.get 'friends.get'
-
-      @client.get_next_page(result).should == nil
+      result.next_page.should == nil
     end
 
     it "should not return nil when calling next_page on response with hasMore" do
@@ -77,14 +65,14 @@ describe OdnoklassnikiAPI do
       stub_get_request(next_data_url, photo_response, 'application/json')
 
       result = @client.get 'photos.getUserAlbumPhotos', {:aid => 1946947353}
-      @client.get_next_page(result).should_not == nil
+      result.next_page.response.should == JSON.parse(photo_response)
     end
 
     it "should return boolean if response" do
       stub_get_request(auth_touch_url, boolean_response, 'application/json')
 
       result = @client.get 'auth.touchSession'
-      result.should == true
+      result.response.should == true
     end
 
   end

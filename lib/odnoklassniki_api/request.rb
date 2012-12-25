@@ -5,16 +5,13 @@ require 'odnoklassniki_api/errors'
 require 'odnoklassniki_api/connection'
 require 'digest/md5'
 require 'multi_json'
+require 'odnoklassniki_api/response'
 
 module OdnoklassnikiAPI
   module Request
 
     def get api_method, options = {}
       request(api_method, options)
-    end
-
-    def get_next_page response
-      get_next_page_data response
     end
 
     private
@@ -34,64 +31,32 @@ module OdnoklassnikiAPI
     end
 
     def request(api_method, options)
-
       options = options.merge method: api_method
       options = options.merge application_key: application_key
       options = options.merge access_token: access_token
       signature = calculate_signature options
       options = options.merge sig: signature
-
-      response = get_data options
-
-      if !(response.is_a? TrueClass or response.is_a? FalseClass)
-        response.instance_eval <<-RESP
-        def options; #{options} end
-        RESP
-      end
-
-      response
+      get_data options
     end
 
     def get_data options
       begin
         response = connection.get { |request| request.params = options }
-
-        response_error = (response.status != 200) ? OdnoklassnikiAPI::Error::WrongStatusError : nil
-
-      rescue MultiJson::DecodeError => e
-        response_error = OdnoklassnikiAPI::Error::ParsingError
-      rescue Faraday::Error::TimeoutError => e
-        response_error = Faraday::Error::TimeoutError
-      rescue Faraday::Error::ParsingError => e
-        response_error = OdnoklassnikiAPI::Error::ParsingError
-      end
-
-      if !response_error.nil?
-        raise response_error
-      else
+        raise OdnoklassnikiAPI::Error::WrongStatusError, "HTTP response code #{response.status}" unless response.status == 200
         response = response.body
 
         if response.respond_to? :error_code
           raise Error::ApiError.get_by_code response.error_code.to_s
         end
+        OdnoklassnikiAPI::Response.new response, options, self
+
+      rescue MultiJson::DecodeError => e
+        raise OdnoklassnikiAPI::Error::ParsingError, "MultiJson decode error"
+      rescue Faraday::Error::TimeoutError => e
+        raise OdnoklassnikiAPI::Error::TimeoutError, "Timeout error"
+      rescue Faraday::Error::ParsingError => e
+        raise OdnoklassnikiAPI::Error::ParsingError, "Faraday parsing error"
       end
-
-      response
-    end
-
-    def get_next_page_data response
-      result = nil
-      if response.respond_to?('hasMore') && (response.hasMore)
-        options = response.options
-        options.delete(:sig)
-        options = options.merge pagingAnchor: response.pagingAnchor
-        signature = calculate_signature options
-        options = options.merge sig: signature
-
-        result = get_data options
-      end
-
-      result
     end
 
   end

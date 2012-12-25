@@ -35,11 +35,7 @@ module OdnoklassnikiAPI
     class ApiError < StandardError
 
       def self.raise_by_code(code=nil)
-        if API_ERROR_CODES[code].nil?
-          raise UnknownApiError
-        else
-          raise OdnoklassnikiAPI::Error.const_get(API_ERROR_CODES[code])
-        end
+        raise get_by_code(code)
       end
 
       def self.get_by_code(code=nil)
@@ -81,7 +77,8 @@ module OdnoklassnikiAPI
     class PaymentIsRequiredPaymentError < ApiError; end # 1002
     class UnknownApiError < ApiError; end # unknown codes
 
-    class TimeoutError < StandardError; end
+    class TimeoutError < ApiError; end
+
     class InvalidJsonResponseError < StandardError; end
     class InvalidResponseStatusError < StandardError; end
     class ParsingError < StandardError; end
