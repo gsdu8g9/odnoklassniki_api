@@ -79,10 +79,10 @@ module OdnoklassnikiAPI
 
     class TimeoutError < ApiError; end
 
-    class InvalidJsonResponseError < StandardError; end
-    class InvalidResponseStatusError < StandardError; end
-    class ParsingError < StandardError; end
-    class WrongStatusError < StandardError; end
+    class InvalidJsonResponseError < ApiError; end
+    class InvalidResponseStatusError < ApiError; end
+    class ParsingError < ApiError; end
+    class WrongStatusError < ApiError; end
 
   end
 end
