@@ -69,6 +69,12 @@ describe OdnoklassnikiAPI do
       expect {@client.get 'friends.get'}.to raise_error(OdnoklassnikiAPI::Error::ParamSessionExpiredError)
     end
 
+    it "should retry 3 times and raise OdnoklassnikiAPI::Error::TimeoutError" do
+      stub_request(:get, url).to_return(:status => 200)
+      OdnoklassnikiAPI::Response.should_receive(:new).exactly(3).times{ raise Errno::ETIMEDOUT }
+      expect {@client.get 'friends.get'}.to raise_error(OdnoklassnikiAPI::Error::TimeoutError)
+    end
+
     it "should return nil when calling next_page on response with no hasMore" do
       stub_get_request(url, normal_response, 'application/json')
       result = @client.get 'friends.get'

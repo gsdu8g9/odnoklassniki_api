@@ -9,6 +9,7 @@ require 'odnoklassniki_api/response'
 
 module OdnoklassnikiAPI
   module Request
+    MAX_TRIES = 3
 
     def get api_method, options = {}
       request(api_method, options)
@@ -36,10 +37,12 @@ module OdnoklassnikiAPI
       options = options.merge access_token: access_token
       signature = calculate_signature options
       options = options.merge sig: signature
-      get_data options
+      response = get_data options
     end
 
-    def get_data options
+    def get_data options, try_no = 0
+      raise OdnoklassnikiAPI::Error::TimeoutError, "Timeout error" unless try_no < MAX_TRIES
+
       begin
         response = connection.get { |request| request.params = options }
         raise OdnoklassnikiAPI::Error::WrongStatusError, "HTTP response code #{response.status}" unless response.status == 200
@@ -56,6 +59,8 @@ module OdnoklassnikiAPI
         raise OdnoklassnikiAPI::Error::TimeoutError, "Timeout error"
       rescue Faraday::Error::ParsingError => e
         raise OdnoklassnikiAPI::Error::ParsingError, "Faraday parsing error"
+      rescue Errno::ETIMEDOUT => e
+        get_data options, try_no + 1
       end
     end
 
