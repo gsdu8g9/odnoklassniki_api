@@ -21,9 +21,10 @@ module OdnoklassnikiAPI
         #       а ряд методов остались без изменений.
         #       Для подобных случаев будем проверять оба ключа на наличие, а если они оба отсутствуют, лучше вернём nil,
         #       иначе наши воркеры повисают в попытках получить все 'страницы' ответа
+        anchor_hash = nil
         anchor_hash = {pagingAnchor: @response.pagingAnchor} if @response.respond_to?('pagingAnchor')
         anchor_hash = {anchor: @response.anchor} if @response.respond_to?('anchor')
-        if defined?(anchor_hash) && anchor_hash!=nil
+        if anchor_hash != nil
           options = @options.merge(anchor_hash)
           options.delete(:sig)
           result = @client.get(options[:method], options)
