@@ -5,7 +5,7 @@ PATH
       faraday
       faraday_middleware
       hashie (>= 1.2.0)
-      multi_json (~> 1.9.0)
+      multi_json (~> 1.5.0)
 
 GEM
   remote: http://rubygems.org/
@@ -20,7 +20,7 @@ GEM
       faraday (>= 0.7.4, < 0.10)
     hashie (3.4.4)
     method_source (0.8)
-    multi_json (1.9.3)
+    multi_json (1.5.1)
     multipart-post (2.0.0)
     pry (0.9.10)
       coderay (~> 1.0.5)

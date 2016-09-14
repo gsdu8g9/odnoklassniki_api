@@ -1,4 +1,3 @@
-# encoding: utf-8
 require 'spec_helper'
 
 describe OdnoklassnikiAPI do
@@ -13,6 +12,10 @@ describe OdnoklassnikiAPI do
   let(:auth_touch_url) { "http://api.odnoklassniki.ru/fb.do?access_token=csipa.21-xxxxxxxxxxxxxxxxxxxxxxxxxxxx&application_key=application_key&method=auth.touchSession&sig=2ef489a1c88398b88f1dab0d9d7dd883" }
   let(:next_old_photo_url) { "http://api.odnoklassniki.ru/fb.do?access_token=csipa.21-xxxxxxxxxxxxxxxxxxxxxxxxxxxx&aid=1946947353&application_key=application_key&method=photos.getUserAlbumPhotos&pagingAnchor=LTMyMTY3NzExMzotNzk5MDk5NDU=&sig=0860d4a85ca615e55158ab8105e1a917" }
   let(:next_new_photo_url) { "http://api.odnoklassniki.ru/fb.do?access_token=csipa.21-xxxxxxxxxxxxxxxxxxxxxxxxxxxx&aid=1946947353&application_key=application_key&method=photos.getPhotos&anchor=LTMyMTY3NzExMzotNzk5MDk5NDU=&sig=6558377511ed8f206e69729e76794c64" }
+
+  let(:groups_url) { "http://api.odnoklassniki.ru/fb.do?access_token=csipa.21-xxxxxxxxxxxxxxxxxxxxxxxxxxxx&application_key=application_key&count=10&method=group.getUserGroupsV2&sig=d6c6412e7ef68d992c01d83034343eae" }
+  let(:next_groups_url) { "http://api.odnoklassniki.ru/fb.do?access_token=csipa.21-xxxxxxxxxxxxxxxxxxxxxxxxxxxx&anchor=LTE4OTI2Mzc0NzQ6LTE4OTI2Mzc0ODQ=&application_key=application_key&count=10&method=group.getUserGroupsV2&sig=67b3c10aeeb9258abe7285a548024dda" }
+  let(:groups_without_count_url) { "http://api.odnoklassniki.ru/fb.do?access_token=csipa.21-xxxxxxxxxxxxxxxxxxxxxxxxxxxx&application_key=application_key&method=group.getUserGroupsV2&sig=9031faa4d753667f698822a6d06b1d99" }
 
   context "проверка инициализации клиента" do
     it "должен проинициализировать клиент по symbol-ключам" do
@@ -36,6 +39,10 @@ describe OdnoklassnikiAPI do
     let(:has_more_response_without_anchor) { '{"photos": [ {  "id":"482208139008", "album_id":"481556811520", "pic50x50":"http://albumava1.odnoklassniki.ru/getImage?photoId=482208139008&photoType=4", "pic128x128":"http://ia100.odnoklassniki.ru/getImage?photoId=482208139008&photoType=2", "pic640x480":"http://ia100.odnoklassniki.ru/getImage?photoId=482208139008&photoType=0", "comments_count":0, "user_id":"558658883072", "mark_count":1, "mark_bonus_count":0, "mark_avg":"5.00" }], "hasMore":true, "totalCount" : 5}' }
     let(:old_photo_response) { '{"photos":[{  "fid":"1675836441",      "caption":"XXXXXXXXXXx...",      "location":null,      "standard_url":"http://devserv.odnoklassniki.ru:8000/getImage?photoId=1675836441&photoType=0",      "preview_url":"http://odnoklassniki.ru?photoId=1675836441&photoType=2",      "mark_count":29,      "mark_bonus_count":4,      "mark_avg":"5+"     }, { "fid":"1946947353",      "caption":"Yyyyyyyyyyyyy",      "location":null,      "standard_url":"http://devserv.odnoklassniki.ru:8000/getImage?photoId=1946947353&photoType=0",      "preview_url":"http://odnoklassniki.ru?photoId=1946947353&photoType=2",      "mark_count":1,      "mark_bonus_count":0,      "mark_avg":"5.00"     }], "totalCount" : 5}' }
     let(:new_photo_response) { '{"photos":[{ "id":"482208139008", "album_id":"481556811520", "pic50x50":"http://albumava1.odnoklassniki.ru/getImage?photoId=482208139008&photoType=4", "pic128x128":"http://ia100.odnoklassniki.ru/getImage?photoId=482208139008&photoType=2", "pic640x480":"http://ia100.odnoklassniki.ru/getImage?photoId=482208139008&photoType=0", "comments_count":0, "user_id":"558658883072", "mark_count":1, "mark_bonus_count":0, "mark_avg":"5.00" }], "totalCount" : 5}' }
+    let(:groups_response) { '{"groups":  [{"groupId":"54171134197876", "userId":"172263097904"},   {"groupId":"53310600970482", "userId":"172263097904"},   {"groupId":"52970507337970", "userId":"172263097904"},   {"groupId":"45034571956402", "userId":"172263097904"},   {"groupId":"54527752011786", "userId":"172263097904"},   {"groupId":"52864568000754", "userId":"172263097904"},   {"groupId":"57182041473085", "userId":"172263097904"},   {"groupId":"51542101655632", "userId":"172263097904"},   {"groupId":"52379659796703", "userId":"172263097904"},   {"groupId":"51731972620416", "userId":"172263097904"}], "anchor":"LTE4OTI2Mzc0NzQ6LTE4OTI2Mzc0ODQ="}' }
+    let(:non_entities_response) { '{"non-groups":  [{"groupId":"54171134197876", "userId":"172263097904"},   {"groupId":"53310600970482", "userId":"172263097904"},   {"groupId":"52970507337970", "userId":"172263097904"},   {"groupId":"45034571956402", "userId":"172263097904"},   {"groupId":"54527752011786", "userId":"172263097904"},   {"groupId":"52864568000754", "userId":"172263097904"},   {"groupId":"57182041473085", "userId":"172263097904"},   {"groupId":"51542101655632", "userId":"172263097904"},   {"groupId":"52379659796703", "userId":"172263097904"},   {"groupId":"51731972620416", "userId":"172263097904"}], "anchor":"LTE4OTI2Mzc0NzQ6LTE4OTI2Mzc0ODQ="}' }
+    let(:next_groups_response) { '{"groups":[{"groupId":"52156080259140", "userId":"172263097904"}], "anchor":"LTE4OTI2Mzc0ODQ6LTE4OTI2Mzc0OTQ="}' }
+    let(:next_groups_nil_response) { '{"groups":null, "anchor":"LTE4OTI2Mzc0ODQ6LTE4OTI2Mzc0OTQ="}' }
     let(:client) { OdnoklassnikiAPI.new({"application_key" => application_key, "secret_key" => secret_key, "access_token" => access_token}) }
 
     it "должен вернуть список id друзей пользователя" do
@@ -111,6 +118,41 @@ describe OdnoklassnikiAPI do
           stub_get_request(new_photo_url, has_more_response_without_anchor, 'application/json')
 
           result = client.get('photos.getPhotos', {aid: 1946947353})
+          expect(result.next_page).to be_nil
+        end
+      end
+
+      context 'когда hasMore нет и пагинируем по-другому' do
+        it "должен вернуть следующую 'страницу' пагинации, если размер последнего результата равен параметру count" do
+          stub_get_request(groups_url, groups_response, 'application/json')
+          stub_get_request(next_groups_url, next_groups_response, 'application/json')
+
+          result = client.get("group.getUserGroupsV2", count: 10)
+          expect(result.next_page).not_to be_nil
+        end
+        it "должен вернуть nil, если сработало условие count > result.size" do
+          stub_get_request(groups_url, next_groups_response, 'application/json')
+
+          result = client.get("group.getUserGroupsV2", count: 10)
+          expect(result.next_page).to be_nil
+        end
+        it "должен вернуть nil в случае, если условие совпадения количества последнего результата и count совпало, но на этом всё" do
+          stub_get_request(groups_url, groups_response, 'application/json')
+          stub_get_request(next_groups_url, next_groups_nil_response, 'application/json')
+
+          result = client.get("group.getUserGroupsV2", count: 10)
+          expect(result.next_page).to be_nil
+        end
+        it "должен вернуть nil, если параметр count отсутствует" do
+          stub_get_request(groups_without_count_url, groups_response, 'application/json')
+
+          result = client.get("group.getUserGroupsV2")
+          expect(result.next_page).to be_nil
+        end
+        it "должен вернуть nil, если имя сущности отлично от перечисленных" do
+          stub_get_request(groups_url, non_entities_response, 'application/json')
+
+          result = client.get("group.getUserGroupsV2", count: 10)
           expect(result.next_page).to be_nil
         end
       end
